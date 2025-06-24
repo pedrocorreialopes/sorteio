@@ -1,0 +1,210 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteador de Números</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0' x2='0' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%23667eea'/%3E%3Cstop offset='1' stop-color='%23764ba2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpattern id='b' width='24' height='24' patternUnits='userSpaceOnUse'%3E%3Ccircle fill='%23ffffff10' cx='12' cy='12' r='3'/%3E%3C/pattern%3E%3Crect width='100%25' height='100%25' fill='url(%23a)'/%3E%3Crect width='100%25' height='100%25' fill='url(%23b)'/%3E%3C/svg%3E");
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        .number-ball {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ffd700, #ffa500);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            color: #fff;
+            font-weight: bold;
+            margin: 5px;
+            animation: pop 0.5s ease-out;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .main-number {
+            font-size: 4rem;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(145deg, #ffd700, #ff8c00);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        input[type="number"] {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="number"]:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+        
+        button {
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto bg-white bg-opacity-90 rounded-xl shadow-xl p-6 md:p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-purple-800 mb-2">Sorteador de Números</h1>
+                <p class="text-gray-600">Defina o intervalo e sorteie números aleatórios</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-center items-center gap-6 mb-8">
+                <div class="w-full md:w-1/3">
+                    <label for="min" class="block text-sm font-medium text-gray-700 mb-1">Número Mínimo</label>
+                    <input type="number" id="min" class="w-full px-4 py-2 rounded-lg" value="1">
+                </div>
+                
+                <div class="w-full md:w-1/3">
+                    <label for="max" class="block text-sm font-medium text-gray-700 mb-1">Número Máximo</label>
+                    <input type="number" id="max" class="w-full px-4 py-2 rounded-lg" value="100">
+                </div>
+            </div>
+            
+            <div class="flex justify-center mb-8">
+                <div id="current-number" class="number-ball main-number">?</div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-center gap-4 mb-8">
+                <button id="draw-btn" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    Sortear Número
+                </button>
+                
+                <button id="clear-btn" class="bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold py-3 px-6 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Limpar Histórico
+                </button>
+            </div>
+            
+            <div class="bg-white bg-opacity-80 rounded-lg p-4 shadow-inner">
+                <h2 class="text-xl font-semibold text-purple-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Histórico de Números Sorteados
+                </h2>
+                <div id="history" class="flex flex-wrap justify-center gap-2 min-h-[100px]">
+                    <p id="empty-message" class="text-gray-500 italic">Nenhum número sorteado ainda</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const minInput = document.getElementById('min');
+            const maxInput = document.getElementById('max');
+            const currentNumber = document.getElementById('current-number');
+            const drawBtn = document.getElementById('draw-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const history = document.getElementById('history');
+            const emptyMessage = document.getElementById('empty-message');
+            
+            let drawnNumbers = [];
+            
+            // Função para sortear um número
+            function drawNumber() {
+                const min = parseInt(minInput.value);
+                const max = parseInt(maxInput.value);
+                
+                // Validação dos valores
+                if (isNaN(min) || isNaN(max)) {
+                    alert('Por favor, insira valores numéricos válidos.');
+                    return;
+                }
+                
+                if (min >= max) {
+                    alert('O número mínimo deve ser menor que o número máximo.');
+                    return;
+                }
+                
+                // Gerar número aleatório
+                const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+                
+                // Atualizar número atual
+                currentNumber.textContent = randomNumber;
+                
+                // Adicionar ao histórico
+                drawnNumbers.push(randomNumber);
+                updateHistory();
+            }
+            
+            // Função para atualizar o histórico
+            function updateHistory() {
+                // Limpar histórico atual
+                history.innerHTML = '';
+                
+                if (drawnNumbers.length === 0) {
+                    // Se não houver números sorteados, mostrar mensagem
+                    history.appendChild(emptyMessage);
+                    return;
+                }
+                
+                // Adicionar números ao histórico
+                drawnNumbers.forEach((number, index) => {
+                    const ball = document.createElement('div');
+                    ball.className = 'number-ball';
+                    ball.textContent = number;
+                    history.appendChild(ball);
+                });
+            }
+            
+            // Função para limpar o histórico
+            function clearHistory() {
+                drawnNumbers = [];
+                currentNumber.textContent = '?';
+                updateHistory();
+            }
+            
+            // Event listeners
+            drawBtn.addEventListener('click', drawNumber);
+            clearBtn.addEventListener('click', clearHistory);
+            
+            // Impedir valores negativos nos inputs
+            minInput.addEventListener('input', function() {
+                if (this.value < 0) this.value = 0;
+            });
+            
+            maxInput.addEventListener('input', function() {
+                if (this.value < 0) this.value = 0;
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9547c38e2775f171',t:'MTc1MDcyMTMyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
